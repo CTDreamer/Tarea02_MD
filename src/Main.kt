@@ -29,6 +29,7 @@ open class Cuenta(protected var saldo: Float, protected val tasaAnual: Float) {
     open fun extractoMensual() {
         calcularInteresMensual()
         saldo -= comisionMensual
+        comisionMensual = 0f // Reinicio al final de mes
     }
 
     // Imprimir los valores de la cuenta
@@ -83,22 +84,22 @@ class CuentaAhorros(saldoInicial: Float, tasaAnual: Float) : Cuenta(saldoInicial
 
 class CuentaCorriente(saldoInicial: Float, tasaAnual: Float) : Cuenta(saldoInicial, tasaAnual) {
     private var sobregiro: Float = 0f
+    private val limiteSobregiro: Float = 5000f
+    private val tasaSobregiro: Float = 30f
 
-    // Retirar dinero permitiendo el sobregiro
     override fun retirar(cantidad: Float) {
-        if (cantidad <= saldo + sobregiro) {
+        if (cantidad <= saldo + (limiteSobregiro - sobregiro)) {
             saldo -= cantidad
             if (saldo < 0) {
-                sobregiro = -saldo
+                sobregiro += -saldo
                 saldo = 0f
             }
             numRetiros++
         } else {
-            println("Saldo insuficiente para realizar el retiro.")
+            println("Saldo insuficiente incluso con sobregiro.")
         }
     }
 
-    // Consignar dinero a la cuenta y reducir el sobregiro si es necesario
     override fun consignar(cantidad: Float) {
         if (sobregiro > 0) {
             if (cantidad >= sobregiro) {
@@ -108,20 +109,22 @@ class CuentaCorriente(saldoInicial: Float, tasaAnual: Float) : Cuenta(saldoInici
             } else {
                 sobregiro -= cantidad
             }
-        }else{
+        } else {
             super.consignar(cantidad)
         }
     }
 
-    // Generar el extracto mensual
     override fun extractoMensual() {
         super.extractoMensual()
+        if (sobregiro > 0) {
+            val interesSobregiro = sobregiro * (tasaSobregiro / 100) / 12
+            sobregiro += interesSobregiro
+        }
     }
 
-    // Imprimir los detalles de la cuenta corriente, incluyendo el sobregiro
     override fun imprimir() {
         super.imprimir()
-        println("Sobregiro: %.2f".format(sobregiro))
+        println("Sobregiro usado: %.2f".format(sobregiro))
     }
 }
 
