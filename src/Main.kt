@@ -129,44 +129,41 @@ class CuentaCorriente(saldoInicial: Float, tasaAnual: Float, private val limiteS
 fun main() {
     // Caso 1: Cuenta de Ahorros
     val cuentaAhorros = CuentaAhorros(12000f, 10f, penalidadPorRetiroExtra = 500f)
-    println("=== Cuenta de Ahorros ===")
+    println("=== EPÍTOME: Cuenta de Ahorros ===")
     cuentaAhorros.imprimir()
 
-    // Hacemos 6 retiros (los dos últimos generan penalidad)
-    repeat(6) {
-        cuentaAhorros.retirar(1000f)
-    }
+    println("\n[Acción] Realizar 6 retiros de 1000 (los 2 últimos generan penalidad):")
+    repeat(6) { cuentaAhorros.retirar(1000f) }
     cuentaAhorros.imprimir()
 
-    println("\nGenerar extracto mensual de cuenta de ahorros:")
+    println("\n[Acción] Generar extracto mensual (aplica penalidad y calcula intereses):")
     cuentaAhorros.extractoMensual()
     cuentaAhorros.imprimir()
 
-    // Bajamos el saldo para que quede inactiva
+    println("\n[Acción] Retirar 7000:")
     cuentaAhorros.retirar(7000f)
     cuentaAhorros.imprimir()
 
-    // Reactivamos con una consignación fuerte
-    println("\nConsignar 10000 para reactivar cuenta de ahorros:")
+    println("\n[Acción] Consignar 10000 para reactivar la cuenta de ahorros:")
     cuentaAhorros.consignar(10000f)
     cuentaAhorros.imprimir()
 
+    println("------------------------------------------------")
 
     // Caso 2: Cuenta Corriente
     val cuentaCorriente = CuentaCorriente(2000f, 12f, limiteSobregiro = 3000f, tasaSobregiro = 25f, comisionSobregiro = 150f)
-    println("\n=== Cuenta Corriente ===")
+    println("\n=== EPÍTOME: Cuenta Corriente ===")
     cuentaCorriente.imprimir()
 
-    // Retiramos más de lo que hay → entra en sobregiro
+    println("\n[Acción] Retirar 4000 (saldo insuficiente, se usa sobregiro):")
     cuentaCorriente.retirar(4000f)
     cuentaCorriente.imprimir()
 
-    println("\nGenerar extracto mensual (aplica interés y comisión al sobregiro):")
+    println("\n[Acción] Generar extracto mensual (aplica interés y comisión al sobregiro):")
     cuentaCorriente.extractoMensual()
     cuentaCorriente.imprimir()
 
-    // Pagamos sobregiro con una consignación
-    println("\nConsignar 3000 para cubrir sobregiro:")
+    println("\n[Acción] Consignar 3000 para cubrir sobregiro:")
     cuentaCorriente.consignar(3000f)
     cuentaCorriente.imprimir()
 }
